@@ -5,6 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Celulares JL - Venta de Celulares a Crédito</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Importar Firebase
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, deleteDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Tu configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDVs8vcmrbiQHvVKoKCrbaM4qJiryGvYx4",
+            authDomain: "celularesjl-c86dc.firebaseapp.com",
+            projectId: "celularesjl-c86dc",
+            storageBucket: "celularesjl-c86dc.firebasestorage.app",
+            messagingSenderId: "641672688811",
+            appId: "1:641672688811:web:c6f97887d0ba53231c73ee"
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Hacer disponible globalmente
+        window.firebaseApp = app;
+        window.firestoreDB = db;
+        window.firebaseModules = { 
+            collection, addDoc, getDocs, updateDoc, doc, deleteDoc, onSnapshot 
+        };
+        
+        console.log("✅ Firebase configurado correctamente");
+    </script>
+
     <style>
         /* TUS ESTILOS ACTUALES (MANTENER TODO) */
         * {
@@ -220,6 +251,19 @@
         .btn-sm {
             padding: 8px 15px;
             font-size: 0.85rem;
+        }
+
+        .firebase-status {
+            background: #2ecc71;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+
+        .firebase-offline {
+            background: #e74c3c;
         }
 
         /* TUS ESTILOS ACTUALES CONTINÚAN... */
@@ -834,10 +878,12 @@
         </div>
     </section>
 
-    <!-- NUEVO: Panel de Administración MDM -->
+    <!-- NUEVO: Panel de Administración MDM con Firebase -->
     <section class="admin-section section-padding" id="admin">
         <div class="container">
-            <h2 class="section-title" style="color: white;">Panel de Administración</h2>
+            <h2 class="section-title" style="color: white;">Panel de Administración 
+                <span id="firebase-status" class="firebase-status">Conectado a Firebase</span>
+            </h2>
             
             <!-- Login para Administradores -->
             <div class="admin-login" id="admin-login">
@@ -861,7 +907,9 @@
             <!-- Panel de Administración (oculto inicialmente) -->
             <div class="admin-panel" id="admin-panel">
                 <div class="admin-header">
-                    <h2>Panel de Control MDM - Celulares JL</h2>
+                    <h2>Panel de Control MDM - Celulares JL 
+                        <span id="firebase-panel-status" class="firebase-status">Firebase ✅</span>
+                    </h2>
                     <button class="btn btn-outline" onclick="logoutAdmin()" style="color: white; border-color: white;">
                         <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
                     </button>
@@ -927,6 +975,12 @@
                             </div>
                             <div id="search-results">
                                 <!-- Resultados de búsqueda -->
+                            </div>
+                            
+                            <div style="margin-top: 20px;">
+                                <button class="btn btn-outline" onclick="exportSalesData()" style="width: 100%;">
+                                    <i class="fas fa-download"></i> Exportar Datos a Excel
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1085,33 +1139,127 @@
             }
         ];
 
-        // ========== NUEVO: SISTEMA MDM ==========
-        let devices = JSON.parse(localStorage.getItem('mdm_devices')) || [
-            {
-                id: 1,
-                clientName: "Juan Pérez",
-                imei: "123456789012345",
-                model: "Samsung Galaxy S23",
-                status: "active",
-                paymentStatus: "al día",
-                lastPayment: "2024-01-15"
-            },
-            {
-                id: 2,
-                clientName: "María García",
-                imei: "987654321098765",
-                model: "iPhone 14 Pro",
-                status: "blocked",
-                paymentStatus: "atrasado",
-                lastPayment: "2023-12-10"
+        // ========== SISTEMA FIREBASE ==========
+        let devices = [];
+        let firebaseReady = false;
+
+        // Verificar estado de Firebase
+        function checkFirebaseStatus() {
+            if (window.firestoreDB) {
+                firebaseReady = true;
+                document.getElementById('firebase-status').textContent = 'Conectado a Firebase';
+                document.getElementById('firebase-panel-status').textContent = 'Firebase ✅';
+                console.log("✅ Firebase conectado correctamente");
+            } else {
+                firebaseReady = false;
+                document.getElementById('firebase-status').textContent = 'Modo Local';
+                document.getElementById('firebase-status').classList.add('firebase-offline');
+                document.getElementById('firebase-panel-status').textContent = 'Modo Local ⚠️';
+                console.log("⚠️ Usando almacenamiento local");
             }
-        ];
+        }
+
+        // Función para guardar dispositivo en Firebase
+        async function saveDeviceToFirebase(deviceData) {
+            if (!firebaseReady) return null;
+            
+            try {
+                const docRef = await firebaseModules.addDoc(
+                    firebaseModules.collection(firestoreDB, "devices"),
+                    {
+                        ...deviceData,
+                        created: new Date().toISOString(),
+                        lastUpdated: new Date().toISOString()
+                    }
+                );
+                console.log("✅ Dispositivo guardado en Firebase:", docRef.id);
+                return docRef.id;
+            } catch (error) {
+                console.error("❌ Error guardando en Firebase:", error);
+                return null;
+            }
+        }
+
+        // Función para cargar dispositivos desde Firebase
+        async function loadDevicesFromFirebase() {
+            if (!firebaseReady) return [];
+            
+            try {
+                const querySnapshot = await firebaseModules.getDocs(
+                    firebaseModules.collection(firestoreDB, "devices")
+                );
+                
+                const firebaseDevices = [];
+                querySnapshot.forEach((doc) => {
+                    firebaseDevices.push({ 
+                        firebaseId: doc.id, 
+                        ...doc.data() 
+                    });
+                });
+                
+                console.log("✅ Dispositivos cargados desde Firebase:", firebaseDevices.length);
+                return firebaseDevices;
+            } catch (error) {
+                console.error("❌ Error cargando desde Firebase:", error);
+                return [];
+            }
+        }
+
+        // Función para actualizar dispositivo en Firebase
+        async function updateDeviceInFirebase(firebaseId, updates) {
+            if (!firebaseReady) return false;
+            
+            try {
+                await firebaseModules.updateDoc(
+                    firebaseModules.doc(firestoreDB, "devices", firebaseId),
+                    {
+                        ...updates,
+                        lastUpdated: new Date().toISOString()
+                    }
+                );
+                console.log("✅ Dispositivo actualizado en Firebase:", firebaseId);
+                return true;
+            } catch (error) {
+                console.error("❌ Error actualizando en Firebase:", error);
+                return false;
+            }
+        }
+
+        // Función para eliminar dispositivo de Firebase
+        async function deleteDeviceFromFirebase(firebaseId) {
+            if (!firebaseReady) return false;
+            
+            try {
+                await firebaseModules.deleteDoc(
+                    firebaseModules.doc(firestoreDB, "devices", firebaseId)
+                );
+                console.log("✅ Dispositivo eliminado de Firebase:", firebaseId);
+                return true;
+            } catch (error) {
+                console.error("❌ Error eliminando de Firebase:", error);
+                return false;
+            }
+        }
+
+        // Guardar en localStorage como backup
+        function saveToLocalStorage() {
+            localStorage.setItem('celularesjl_devices', JSON.stringify(devices));
+        }
+
+        // Cargar desde localStorage
+        function loadFromLocalStorage() {
+            const localDevices = JSON.parse(localStorage.getItem('celularesjl_devices')) || [];
+            return localDevices;
+        }
 
         // Cargar productos en la página (EXISTENTE)
         document.addEventListener('DOMContentLoaded', function() {
             const productsContainer = document.getElementById('products-container');
             const productSelect = document.getElementById('product');
             const filterButtons = document.querySelectorAll('.filter-btn');
+            
+            // Verificar estado de Firebase
+            setTimeout(checkFirebaseStatus, 1000);
             
             // Función para renderizar productos
             function renderProducts(filter = 'all') {
@@ -1157,11 +1305,8 @@
             // Manejar filtros de productos
             filterButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    // Remover clase active de todos los botones
                     filterButtons.forEach(btn => btn.classList.remove('active'));
-                    // Agregar clase active al botón clickeado
                     this.classList.add('active');
-                    // Filtrar productos
                     renderProducts(this.getAttribute('data-filter'));
                 });
             });
@@ -1181,8 +1326,8 @@
                 }
             });
 
-            // ========== NUEVO: SISTEMA DE LOGIN MDM ==========
-            document.getElementById('login-form').addEventListener('submit', function(e) {
+            // ========== SISTEMA DE LOGIN MDM ==========
+            document.getElementById('login-form').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const username = document.getElementById('username').value;
                 const password = document.getElementById('password').value;
@@ -1190,49 +1335,118 @@
                 if (username === 'admin' && password === '1234') {
                     document.getElementById('admin-login').style.display = 'none';
                     document.getElementById('admin-panel').style.display = 'block';
-                    loadAdminPanel();
+                    await loadAdminPanel();
                 } else {
                     alert('Usuario o contraseña incorrectos');
                 }
             });
 
-            // ========== NUEVO: FORMULARIO AGREGAR DISPOSITIVO ==========
-            document.getElementById('add-device-form').addEventListener('submit', function(e) {
+            // ========== FORMULARIO AGREGAR DISPOSITIVO ==========
+            document.getElementById('add-device-form').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const clientName = document.getElementById('client-name').value;
                 const imei = document.getElementById('device-imei').value;
                 const model = document.getElementById('device-model').value;
                 
                 const newDevice = {
-                    id: devices.length + 1,
                     clientName: clientName,
                     imei: imei,
                     model: model,
                     status: "active",
                     paymentStatus: "al día",
-                    lastPayment: new Date().toISOString().split('T')[0]
+                    lastPayment: new Date().toISOString().split('T')[0],
+                    created: new Date().toISOString()
                 };
                 
-                devices.push(newDevice);
-                saveDevices();
-                loadDevicesList();
-                updateStats();
+                // Intentar guardar en Firebase
+                const firebaseId = await saveDeviceToFirebase(newDevice);
                 
-                // Limpiar formulario
+                if (firebaseId) {
+                    // Éxito en Firebase
+                    newDevice.firebaseId = firebaseId;
+                    devices.push(newDevice);
+                } else {
+                    // Fallback a localStorage
+                    newDevice.id = 'local_' + Date.now();
+                    devices.push(newDevice);
+                    saveToLocalStorage();
+                }
+                
+                await loadDevicesList();
+                updateStats();
                 document.getElementById('add-device-form').reset();
                 alert('Dispositivo agregado exitosamente');
             });
         });
 
-        // ========== NUEVAS FUNCIONES MDM ==========
-        function loadAdminPanel() {
-            loadDevicesList();
+        // ========== FUNCIONES MDM ACTUALIZADAS ==========
+        async function loadAdminPanel() {
+            await loadDevicesList();
             updateStats();
         }
 
-        function loadDevicesList() {
+        async function loadDevicesList() {
+            try {
+                // Intentar cargar desde Firebase primero
+                const firebaseDevices = await loadDevicesFromFirebase();
+                
+                if (firebaseDevices.length > 0) {
+                    devices = firebaseDevices;
+                    console.log("📱 Dispositivos cargados desde Firebase");
+                } else {
+                    // Fallback a localStorage
+                    devices = loadFromLocalStorage();
+                    console.log("📱 Dispositivos cargados desde almacenamiento local");
+                    
+                    // Migrar datos locales a Firebase si es posible
+                    if (devices.length > 0 && firebaseReady) {
+                        await migrateToFirebase(devices);
+                    }
+                }
+                
+                renderDevicesList();
+                updateStats();
+            } catch (error) {
+                console.error("Error cargando dispositivos:", error);
+                devices = loadFromLocalStorage();
+                renderDevicesList();
+                updateStats();
+            }
+        }
+
+        async function migrateToFirebase(localDevices) {
+            console.log("🔄 Migrando datos locales a Firebase...");
+            let migratedCount = 0;
+            
+            for (const device of localDevices) {
+                if (!device.firebaseId) {
+                    const firebaseId = await saveDeviceToFirebase(device);
+                    if (firebaseId) {
+                        device.firebaseId = firebaseId;
+                        migratedCount++;
+                    }
+                }
+            }
+            
+            if (migratedCount > 0) {
+                saveToLocalStorage();
+                console.log(`✅ ${migratedCount} dispositivos migrados a Firebase`);
+            }
+        }
+
+        function renderDevicesList() {
             const devicesList = document.getElementById('devices-list');
             devicesList.innerHTML = '';
+            
+            if (devices.length === 0) {
+                devicesList.innerHTML = `
+                    <div style="padding: 40px; text-align: center; color: #666;">
+                        <i class="fas fa-mobile-alt" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                        <p>No hay dispositivos registrados aún.</p>
+                    </div>
+                `;
+                return;
+            }
             
             devices.forEach(device => {
                 const deviceItem = document.createElement('div');
@@ -1255,10 +1469,10 @@
                     </div>
                     <div>
                         ${device.status === 'active' 
-                            ? `<button class="btn btn-accent btn-sm" onclick="blockDevice(${device.id})">Bloquear</button>`
-                            : `<button class="btn btn-sm" onclick="unblockDevice(${device.id})">Desbloquear</button>`
+                            ? `<button class="btn btn-accent btn-sm" onclick="blockDevice('${device.firebaseId || device.id}')">Bloquear</button>`
+                            : `<button class="btn btn-sm" onclick="unblockDevice('${device.firebaseId || device.id}')">Desbloquear</button>`
                         }
-                        <button class="btn btn-outline btn-sm" onclick="deleteDevice(${device.id})" style="margin-left: 5px;">
+                        <button class="btn btn-outline btn-sm" onclick="deleteDevice('${device.firebaseId || device.id}')" style="margin-left: 5px;">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -1279,35 +1493,60 @@
             document.getElementById('pending-payments').textContent = pending;
         }
 
-        function blockDevice(deviceId) {
-            const device = devices.find(d => d.id === deviceId);
+        async function blockDevice(deviceId) {
+            const device = findDeviceById(deviceId);
             if (device) {
                 device.status = 'blocked';
-                saveDevices();
-                loadDevicesList();
+                
+                // Actualizar en Firebase si existe
+                if (device.firebaseId) {
+                    await updateDeviceInFirebase(device.firebaseId, { status: 'blocked' });
+                }
+                
+                saveToLocalStorage();
+                await loadDevicesList();
                 updateStats();
-                alert(`Dispositivo ${device.imei} ha sido BLOQUEADO`);
+                alert(`📵 Dispositivo ${device.imei} ha sido BLOQUEADO`);
             }
         }
 
-        function unblockDevice(deviceId) {
-            const device = devices.find(d => d.id === deviceId);
+        async function unblockDevice(deviceId) {
+            const device = findDeviceById(deviceId);
             if (device) {
                 device.status = 'active';
-                saveDevices();
-                loadDevicesList();
+                
+                // Actualizar en Firebase si existe
+                if (device.firebaseId) {
+                    await updateDeviceInFirebase(device.firebaseId, { status: 'active' });
+                }
+                
+                saveToLocalStorage();
+                await loadDevicesList();
                 updateStats();
-                alert(`Dispositivo ${device.imei} ha sido DESBLOQUEADO`);
+                alert(`✅ Dispositivo ${device.imei} ha sido DESBLOQUEADO`);
             }
         }
 
-        function deleteDevice(deviceId) {
+        async function deleteDevice(deviceId) {
             if (confirm('¿Estás seguro de que quieres eliminar este dispositivo?')) {
-                devices = devices.filter(d => d.id !== deviceId);
-                saveDevices();
-                loadDevicesList();
-                updateStats();
+                const device = findDeviceById(deviceId);
+                if (device) {
+                    // Eliminar de Firebase si existe
+                    if (device.firebaseId) {
+                        await deleteDeviceFromFirebase(device.firebaseId);
+                    }
+                    
+                    // Eliminar del array local
+                    devices = devices.filter(d => (d.firebaseId || d.id) !== deviceId);
+                    saveToLocalStorage();
+                    await loadDevicesList();
+                    updateStats();
+                }
             }
+        }
+
+        function findDeviceById(deviceId) {
+            return devices.find(d => (d.firebaseId || d.id) === deviceId);
         }
 
         function searchDevices() {
@@ -1336,8 +1575,32 @@
             document.getElementById('login-form').reset();
         }
 
-        function saveDevices() {
-            localStorage.setItem('mdm_devices', JSON.stringify(devices));
+        // Función para exportar datos a Excel
+        function exportSalesData() {
+            const salesData = devices.map(device => ({
+                'Cliente': device.clientName,
+                'Modelo': device.model,
+                'IMEI': device.imei,
+                'Estado': device.status,
+                'Estado de Pago': device.paymentStatus,
+                'Último Pago': device.lastPayment,
+                'Fecha Registro': device.created
+            }));
+            
+            let csv = 'Cliente,Modelo,IMEI,Estado,Estado de Pago,Último Pago,Fecha Registro\n';
+            salesData.forEach(row => {
+                csv += `"${row.Cliente}","${row.Modelo}","${row.IMEI}","${row.Estado}","${row['Estado de Pago']}","${row['Último Pago']}","${row['Fecha Registro']}"\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', `ventas-celularesjl-${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
 
         // Función para calcular el crédito (EXISTENTE)
@@ -1398,8 +1661,39 @@
                     <span>Total financiado:</span>
                     <span>$${totalAmount.toFixed(2)}</span>
                 </div>
-                <button class="btn" style="margin-top: 20px; width: 100%;">Solicitar Este Crédito</button>
+                <button class="btn" style="margin-top: 20px; width: 100%;" onclick="saveSale({
+                    product: '${product.name}',
+                    price: ${product.price},
+                    months: ${months},
+                    initialPayment: ${initialPayment},
+                    monthlyPayment: ${monthlyPayment.toFixed(2)},
+                    totalAmount: ${totalAmount.toFixed(2)}
+                })">Solicitar Este Crédito</button>
             `;
+        }
+
+        // Función para guardar ventas
+        async function saveSale(saleData) {
+            // Aquí puedes implementar el guardado de ventas en Firebase
+            console.log("💳 Venta procesada:", saleData);
+            alert('¡Crédito solicitado exitosamente! Nos pondremos en contacto contigo.');
+            
+            // Guardar en Firebase si está configurado
+            if (firebaseReady) {
+                try {
+                    await firebaseModules.addDoc(
+                        firebaseModules.collection(firestoreDB, "sales"),
+                        {
+                            ...saleData,
+                            timestamp: new Date().toISOString(),
+                            status: "pending"
+                        }
+                    );
+                    console.log("✅ Venta guardada en Firebase");
+                } catch (error) {
+                    console.error("❌ Error guardando venta en Firebase:", error);
+                }
+            }
         }
     </script>
 </body>
