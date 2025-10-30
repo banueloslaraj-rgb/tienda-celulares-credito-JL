@@ -37,7 +37,6 @@
     </script>
 
     <style>
-        /* TUS ESTILOS ACTUALES (MANTENER TODO) */
         * {
             margin: 0;
             padding: 0;
@@ -231,6 +230,32 @@
             border-bottom: none;
         }
 
+        /* ========== SOLUCIÓN: TEXTO EN NEGRO ========== */
+        .device-item > div:first-child {
+            color: #000000 !important;
+            font-weight: 600;
+        }
+
+        .device-item > div:nth-child(2) {
+            color: #000000 !important;
+            font-family: monospace;
+            font-weight: 600;
+        }
+
+        .device-header,
+        .device-item {
+            color: #333333 !important;
+        }
+
+        .device-item {
+            background-color: #ffffff;
+        }
+
+        .device-item:hover {
+            background-color: #f8f9fa;
+        }
+        /* ========== FIN SOLUCIÓN ========== */
+
         .status-badge {
             padding: 6px 12px;
             border-radius: 20px;
@@ -266,7 +291,6 @@
             background: #e74c3c;
         }
 
-        /* TUS ESTILOS ACTUALES CONTINÚAN... */
         /* Header */
         header {
             background-color: white;
@@ -878,7 +902,7 @@
         </div>
     </section>
 
-    <!-- NUEVO: Panel de Administración MDM con Firebase -->
+    <!-- Panel de Administración MDM con Firebase -->
     <section class="admin-section section-padding" id="admin">
         <div class="container">
             <h2 class="section-title" style="color: white;">Panel de Administración 
