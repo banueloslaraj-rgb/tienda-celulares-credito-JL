@@ -6,7 +6,7 @@
     <title>Celulares JL - Venta de Celulares a Crédito</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Estilos generales */
+        /* TUS ESTILOS ACTUALES (MANTENER TODO) */
         * {
             margin: 0;
             padding: 0;
@@ -97,7 +97,132 @@
             background-color: var(--primary);
             color: white;
         }
-        
+
+        /* NUEVOS ESTILOS PARA EL PANEL MDM */
+        .admin-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 0;
+        }
+
+        .admin-login {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .admin-login h2 {
+            color: var(--secondary);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .admin-panel {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .admin-header {
+            background: var(--secondary);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: var(--light);
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+
+        .admin-content {
+            padding: 30px;
+        }
+
+        .device-list {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .device-header {
+            background: var(--light);
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            gap: 15px;
+            font-weight: bold;
+            color: var(--secondary);
+        }
+
+        .device-item {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            gap: 15px;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .device-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-active {
+            background: #e8f5e8;
+            color: var(--success);
+        }
+
+        .status-blocked {
+            background: #ffeaea;
+            color: var(--accent);
+        }
+
+        .btn-sm {
+            padding: 8px 15px;
+            font-size: 0.85rem;
+        }
+
+        /* TUS ESTILOS ACTUALES CONTINÚAN... */
         /* Header */
         header {
             background-color: white;
@@ -527,6 +652,11 @@
             .hero h1 {
                 font-size: 2.5rem;
             }
+
+            .device-header, .device-item {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
         }
         
         @media (max-width: 768px) {
@@ -578,6 +708,10 @@
             .feature-card {
                 padding: 30px 20px;
             }
+
+            .admin-stats {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -594,10 +728,10 @@
                     <li><a href="#inicio">Inicio</a></li>
                     <li><a href="#productos">Productos</a></li>
                     <li><a href="#credito">Crédito</a></li>
-                    <li><a href="#testimonios">Testimonios</a></li>
+                    <li><a href="#admin">Administración</a></li>
                     <li><a href="#contacto">Contacto</a></li>
                 </ul>
-                <button class="btn">Solicitar Crédito</button>
+                <a href="#credito" class="btn">Solicitar Crédito</a>
             </nav>
         </div>
     </header>
@@ -700,6 +834,107 @@
         </div>
     </section>
 
+    <!-- NUEVO: Panel de Administración MDM -->
+    <section class="admin-section section-padding" id="admin">
+        <div class="container">
+            <h2 class="section-title" style="color: white;">Panel de Administración</h2>
+            
+            <!-- Login para Administradores -->
+            <div class="admin-login" id="admin-login">
+                <h2>Acceso Administrativo</h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="username">Usuario</label>
+                        <input type="text" id="username" required placeholder="Ingresa tu usuario">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Contraseña</label>
+                        <input type="password" id="password" required placeholder="Ingresa tu contraseña">
+                    </div>
+                    <button type="submit" class="btn" style="width: 100%;">Acceder al Panel</button>
+                </form>
+                <p style="text-align: center; margin-top: 20px; color: #666; font-size: 0.9rem;">
+                    Usuario: admin | Contraseña: 1234
+                </p>
+            </div>
+
+            <!-- Panel de Administración (oculto inicialmente) -->
+            <div class="admin-panel" id="admin-panel">
+                <div class="admin-header">
+                    <h2>Panel de Control MDM - Celulares JL</h2>
+                    <button class="btn btn-outline" onclick="logoutAdmin()" style="color: white; border-color: white;">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </button>
+                </div>
+
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <span class="stat-number" id="total-devices">0</span>
+                        <span class="stat-label">Dispositivos Totales</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="active-devices">0</span>
+                        <span class="stat-label">Dispositivos Activos</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="blocked-devices">0</span>
+                        <span class="stat-label">Dispositivos Bloqueados</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="pending-payments">0</span>
+                        <span class="stat-label">Pagos Pendientes</span>
+                    </div>
+                </div>
+
+                <div class="admin-content">
+                    <h3 style="margin-bottom: 20px; color: var(--secondary);">Gestión de Dispositivos</h3>
+                    
+                    <div class="device-list">
+                        <div class="device-header">
+                            <div>Cliente / Dispositivo</div>
+                            <div>IMEI</div>
+                            <div>Estado de Pago</div>
+                            <div>Estado MDM</div>
+                            <div>Acciones</div>
+                        </div>
+                        <div id="devices-list">
+                            <!-- Los dispositivos se cargarán aquí dinámicamente -->
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 40px;">
+                        <div>
+                            <h4 style="margin-bottom: 15px; color: var(--secondary);">Agregar Nuevo Dispositivo</h4>
+                            <form id="add-device-form">
+                                <div class="form-group">
+                                    <input type="text" id="client-name" placeholder="Nombre del cliente" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" id="device-imei" placeholder="IMEI del dispositivo" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" id="device-model" placeholder="Modelo del dispositivo" required>
+                                </div>
+                                <button type="submit" class="btn">Agregar Dispositivo</button>
+                            </form>
+                        </div>
+                        
+                        <div>
+                            <h4 style="margin-bottom: 15px; color: var(--secondary);">Búsqueda Rápida</h4>
+                            <div class="form-group">
+                                <input type="text" id="search-device" placeholder="Buscar por IMEI o cliente..." 
+                                       onkeyup="searchDevices()">
+                            </div>
+                            <div id="search-results">
+                                <!-- Resultados de búsqueda -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Testimonios -->
     <section class="testimonials section-padding" id="testimonios">
         <div class="container">
@@ -765,7 +1000,7 @@
                         <li><a href="#inicio">Inicio</a></li>
                         <li><a href="#productos">Productos</a></li>
                         <li><a href="#credito">Crédito</a></li>
-                        <li><a href="#testimonios">Testimonios</a></li>
+                        <li><a href="#admin">Administración</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
@@ -792,7 +1027,7 @@
     </footer>
 
     <script>
-        // Datos de productos
+        // ========== DATOS EXISTENTES ==========
         const products = [
             {
                 id: 1,
@@ -850,7 +1085,29 @@
             }
         ];
 
-        // Cargar productos en la página
+        // ========== NUEVO: SISTEMA MDM ==========
+        let devices = JSON.parse(localStorage.getItem('mdm_devices')) || [
+            {
+                id: 1,
+                clientName: "Juan Pérez",
+                imei: "123456789012345",
+                model: "Samsung Galaxy S23",
+                status: "active",
+                paymentStatus: "al día",
+                lastPayment: "2024-01-15"
+            },
+            {
+                id: 2,
+                clientName: "María García",
+                imei: "987654321098765",
+                model: "iPhone 14 Pro",
+                status: "blocked",
+                paymentStatus: "atrasado",
+                lastPayment: "2023-12-10"
+            }
+        ];
+
+        // Cargar productos en la página (EXISTENTE)
         document.addEventListener('DOMContentLoaded', function() {
             const productsContainer = document.getElementById('products-container');
             const productSelect = document.getElementById('product');
@@ -923,9 +1180,167 @@
                     document.getElementById('credito').scrollIntoView({ behavior: 'smooth' });
                 }
             });
+
+            // ========== NUEVO: SISTEMA DE LOGIN MDM ==========
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                if (username === 'admin' && password === '1234') {
+                    document.getElementById('admin-login').style.display = 'none';
+                    document.getElementById('admin-panel').style.display = 'block';
+                    loadAdminPanel();
+                } else {
+                    alert('Usuario o contraseña incorrectos');
+                }
+            });
+
+            // ========== NUEVO: FORMULARIO AGREGAR DISPOSITIVO ==========
+            document.getElementById('add-device-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const clientName = document.getElementById('client-name').value;
+                const imei = document.getElementById('device-imei').value;
+                const model = document.getElementById('device-model').value;
+                
+                const newDevice = {
+                    id: devices.length + 1,
+                    clientName: clientName,
+                    imei: imei,
+                    model: model,
+                    status: "active",
+                    paymentStatus: "al día",
+                    lastPayment: new Date().toISOString().split('T')[0]
+                };
+                
+                devices.push(newDevice);
+                saveDevices();
+                loadDevicesList();
+                updateStats();
+                
+                // Limpiar formulario
+                document.getElementById('add-device-form').reset();
+                alert('Dispositivo agregado exitosamente');
+            });
         });
 
-        // Función para calcular el crédito
+        // ========== NUEVAS FUNCIONES MDM ==========
+        function loadAdminPanel() {
+            loadDevicesList();
+            updateStats();
+        }
+
+        function loadDevicesList() {
+            const devicesList = document.getElementById('devices-list');
+            devicesList.innerHTML = '';
+            
+            devices.forEach(device => {
+                const deviceItem = document.createElement('div');
+                deviceItem.className = 'device-item';
+                deviceItem.innerHTML = `
+                    <div>
+                        <strong>${device.clientName}</strong><br>
+                        <small>${device.model}</small>
+                    </div>
+                    <div>${device.imei}</div>
+                    <div>
+                        <span class="status-badge ${device.paymentStatus === 'al día' ? 'status-active' : 'status-blocked'}">
+                            ${device.paymentStatus}
+                        </span>
+                    </div>
+                    <div>
+                        <span class="status-badge ${device.status === 'active' ? 'status-active' : 'status-blocked'}">
+                            ${device.status === 'active' ? 'ACTIVO' : 'BLOQUEADO'}
+                        </span>
+                    </div>
+                    <div>
+                        ${device.status === 'active' 
+                            ? `<button class="btn btn-accent btn-sm" onclick="blockDevice(${device.id})">Bloquear</button>`
+                            : `<button class="btn btn-sm" onclick="unblockDevice(${device.id})">Desbloquear</button>`
+                        }
+                        <button class="btn btn-outline btn-sm" onclick="deleteDevice(${device.id})" style="margin-left: 5px;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                devicesList.appendChild(deviceItem);
+            });
+        }
+
+        function updateStats() {
+            const total = devices.length;
+            const active = devices.filter(d => d.status === 'active').length;
+            const blocked = devices.filter(d => d.status === 'blocked').length;
+            const pending = devices.filter(d => d.paymentStatus === 'atrasado').length;
+            
+            document.getElementById('total-devices').textContent = total;
+            document.getElementById('active-devices').textContent = active;
+            document.getElementById('blocked-devices').textContent = blocked;
+            document.getElementById('pending-payments').textContent = pending;
+        }
+
+        function blockDevice(deviceId) {
+            const device = devices.find(d => d.id === deviceId);
+            if (device) {
+                device.status = 'blocked';
+                saveDevices();
+                loadDevicesList();
+                updateStats();
+                alert(`Dispositivo ${device.imei} ha sido BLOQUEADO`);
+            }
+        }
+
+        function unblockDevice(deviceId) {
+            const device = devices.find(d => d.id === deviceId);
+            if (device) {
+                device.status = 'active';
+                saveDevices();
+                loadDevicesList();
+                updateStats();
+                alert(`Dispositivo ${device.imei} ha sido DESBLOQUEADO`);
+            }
+        }
+
+        function deleteDevice(deviceId) {
+            if (confirm('¿Estás seguro de que quieres eliminar este dispositivo?')) {
+                devices = devices.filter(d => d.id !== deviceId);
+                saveDevices();
+                loadDevicesList();
+                updateStats();
+            }
+        }
+
+        function searchDevices() {
+            const searchTerm = document.getElementById('search-device').value.toLowerCase();
+            const results = devices.filter(device => 
+                device.clientName.toLowerCase().includes(searchTerm) || 
+                device.imei.includes(searchTerm)
+            );
+            
+            const resultsDiv = document.getElementById('search-results');
+            if (searchTerm.length > 0) {
+                resultsDiv.innerHTML = results.map(device => `
+                    <div style="padding: 10px; border-bottom: 1px solid #eee;">
+                        <strong>${device.clientName}</strong> - ${device.model}<br>
+                        <small>IMEI: ${device.imei} | Estado: ${device.status}</small>
+                    </div>
+                `).join('');
+            } else {
+                resultsDiv.innerHTML = '';
+            }
+        }
+
+        function logoutAdmin() {
+            document.getElementById('admin-panel').style.display = 'none';
+            document.getElementById('admin-login').style.display = 'block';
+            document.getElementById('login-form').reset();
+        }
+
+        function saveDevices() {
+            localStorage.setItem('mdm_devices', JSON.stringify(devices));
+        }
+
+        // Función para calcular el crédito (EXISTENTE)
         function calculateCredit() {
             const productId = document.getElementById('product').value;
             const months = parseInt(document.getElementById('months').value);
