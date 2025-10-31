@@ -10,7 +10,7 @@
     <script type="module">
         // Importar Firebase
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, deleteDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, deleteDoc, onSnapshot, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
         // Tu configuración de Firebase
         const firebaseConfig = {
@@ -30,7 +30,7 @@
         window.firebaseApp = app;
         window.firestoreDB = db;
         window.firebaseModules = { 
-            collection, addDoc, getDocs, updateDoc, doc, deleteDoc, onSnapshot 
+            collection, addDoc, getDocs, updateDoc, doc, deleteDoc, onSnapshot, setDoc 
         };
         
         console.log("✅ Firebase configurado correctamente");
@@ -1163,7 +1163,7 @@
             }
         ];
 
-        // ========== SISTEMA FIREBASE ==========
+        // ========== SISTEMA FIREBASE CORREGIDO ==========
         let devices = [];
         let firebaseReady = false;
 
@@ -1183,28 +1183,37 @@
             }
         }
 
-        // Función para guardar dispositivo en Firebase
+        // ========== FUNCIONES FIREBASE CORREGIDAS ==========
+
+        // Función para guardar dispositivo en Firebase - CORREGIDA
         async function saveDeviceToFirebase(deviceData) {
             if (!firebaseReady) return null;
             
             try {
-                const docRef = await firebaseModules.addDoc(
-                    firebaseModules.collection(firestoreDB, "devices"),
-                    {
-                        ...deviceData,
-                        created: new Date().toISOString(),
-                        lastUpdated: new Date().toISOString()
-                    }
-                );
-                console.log("✅ Dispositivo guardado en Firebase:", docRef.id);
-                return docRef.id;
+                // USAR EL IMEI COMO ID DEL DOCUMENTO (para que coincida con la app)
+                const deviceRef = firebaseModules.doc(firestoreDB, "devices", deviceData.imei);
+                
+                await firebaseModules.setDoc(deviceRef, {
+                    deviceId: deviceData.imei,  // ← ESTE CAMPO ES CLAVE para la app
+                    model: deviceData.model,
+                    status: "active",
+                    clientName: deviceData.clientName,
+                    imei: deviceData.imei,      // ← Mantener también el IMEI original
+                    paymentStatus: deviceData.paymentStatus || "al día",
+                    lastPayment: deviceData.lastPayment || new Date().toISOString().split('T')[0],
+                    created: new Date().toISOString(),
+                    lastUpdated: new Date().toISOString()
+                });
+                
+                console.log("✅ Dispositivo guardado en Firebase con ID:", deviceData.imei);
+                return deviceData.imei;
             } catch (error) {
                 console.error("❌ Error guardando en Firebase:", error);
                 return null;
             }
         }
 
-        // Función para cargar dispositivos desde Firebase
+        // Función para cargar dispositivos desde Firebase - CORREGIDA
         async function loadDevicesFromFirebase() {
             if (!firebaseReady) return [];
             
@@ -1215,9 +1224,16 @@
                 
                 const firebaseDevices = [];
                 querySnapshot.forEach((doc) => {
+                    const data = doc.data();
                     firebaseDevices.push({ 
                         firebaseId: doc.id, 
-                        ...doc.data() 
+                        clientName: data.clientName || '',
+                        imei: data.imei || doc.id,
+                        model: data.model || 'Desconocido',
+                        status: data.status || 'active',
+                        paymentStatus: data.paymentStatus || 'al día',
+                        lastPayment: data.lastPayment || new Date().toISOString().split('T')[0],
+                        created: data.created || new Date().toISOString()
                     });
                 });
                 
@@ -1229,19 +1245,33 @@
             }
         }
 
-        // Función para actualizar dispositivo en Firebase
-        async function updateDeviceInFirebase(firebaseId, updates) {
+        // Función para actualizar dispositivo en Firebase - CORREGIDA
+        async function updateDeviceInFirebase(deviceId, updates) {
             if (!firebaseReady) return false;
             
             try {
-                await firebaseModules.updateDoc(
-                    firebaseModules.doc(firestoreDB, "devices", firebaseId),
-                    {
-                        ...updates,
-                        lastUpdated: new Date().toISOString()
+                // Asegurar que deviceId esté en los updates si se está actualizando el estado
+                const updateData = {
+                    ...updates,
+                    lastUpdated: new Date().toISOString()
+                };
+                
+                // Si estamos actualizando el estado, mantener la estructura que espera la app
+                if (updates.status) {
+                    updateData.status = updates.status;
+                    // Cuando bloqueamos, también actualizar clientName si es necesario
+                    if (updates.status === 'blocked' && updates.clientName) {
+                        updateData.clientName = updates.clientName;
+                    } else if (updates.status === 'active') {
+                        updateData.clientName = ""; // Limpiar nombre al desbloquear
                     }
+                }
+                
+                await firebaseModules.updateDoc(
+                    firebaseModules.doc(firestoreDB, "devices", deviceId),
+                    updateData
                 );
-                console.log("✅ Dispositivo actualizado en Firebase:", firebaseId);
+                console.log("✅ Dispositivo actualizado en Firebase:", deviceId);
                 return true;
             } catch (error) {
                 console.error("❌ Error actualizando en Firebase:", error);
@@ -1250,14 +1280,14 @@
         }
 
         // Función para eliminar dispositivo de Firebase
-        async function deleteDeviceFromFirebase(firebaseId) {
+        async function deleteDeviceFromFirebase(deviceId) {
             if (!firebaseReady) return false;
             
             try {
                 await firebaseModules.deleteDoc(
-                    firebaseModules.doc(firestoreDB, "devices", firebaseId)
+                    firebaseModules.doc(firestoreDB, "devices", deviceId)
                 );
-                console.log("✅ Dispositivo eliminado de Firebase:", firebaseId);
+                console.log("✅ Dispositivo eliminado de Firebase:", deviceId);
                 return true;
             } catch (error) {
                 console.error("❌ Error eliminando de Firebase:", error);
@@ -1276,7 +1306,51 @@
             return localDevices;
         }
 
-        // Cargar productos en la página (EXISTENTE)
+        // ========== FUNCIONES MDM CORREGIDAS ==========
+
+        async function blockDevice(deviceId) {
+            const device = findDeviceById(deviceId);
+            if (device) {
+                // ACTUALIZAR EN FIREBASE CON LA ESTRUCTURA CORRECTA
+                if (device.firebaseId) {
+                    await updateDeviceInFirebase(device.firebaseId, { 
+                        status: 'blocked',
+                        clientName: device.clientName  // ← ENVIAR EL NOMBRE DEL CLIENTE
+                    });
+                }
+                
+                // También actualizar localmente
+                device.status = 'blocked';
+                saveToLocalStorage();
+                await loadDevicesList();
+                updateStats();
+                alert(`📵 Dispositivo ${device.imei} ha sido BLOQUEADO\nCliente: ${device.clientName}`);
+            }
+        }
+
+        async function unblockDevice(deviceId) {
+            const device = findDeviceById(deviceId);
+            if (device) {
+                // ACTUALIZAR EN FIREBASE CON LA ESTRUCTURA CORRECTA
+                if (device.firebaseId) {
+                    await updateDeviceInFirebase(device.firebaseId, { 
+                        status: 'active',
+                        clientName: ""  // ← LIMPIAR EL NOMBRE AL DESBLOQUEAR
+                    });
+                }
+                
+                // También actualizar localmente
+                device.status = 'active';
+                saveToLocalStorage();
+                await loadDevicesList();
+                updateStats();
+                alert(`✅ Dispositivo ${device.imei} ha sido DESBLOQUEADO`);
+            }
+        }
+
+        // ========== CÓDIGO EXISTENTE (sin cambios) ==========
+
+        // Cargar productos en la página
         document.addEventListener('DOMContentLoaded', function() {
             const productsContainer = document.getElementById('products-container');
             const productSelect = document.getElementById('product');
@@ -1517,40 +1591,6 @@
             document.getElementById('pending-payments').textContent = pending;
         }
 
-        async function blockDevice(deviceId) {
-            const device = findDeviceById(deviceId);
-            if (device) {
-                device.status = 'blocked';
-                
-                // Actualizar en Firebase si existe
-                if (device.firebaseId) {
-                    await updateDeviceInFirebase(device.firebaseId, { status: 'blocked' });
-                }
-                
-                saveToLocalStorage();
-                await loadDevicesList();
-                updateStats();
-                alert(`📵 Dispositivo ${device.imei} ha sido BLOQUEADO`);
-            }
-        }
-
-        async function unblockDevice(deviceId) {
-            const device = findDeviceById(deviceId);
-            if (device) {
-                device.status = 'active';
-                
-                // Actualizar en Firebase si existe
-                if (device.firebaseId) {
-                    await updateDeviceInFirebase(device.firebaseId, { status: 'active' });
-                }
-                
-                saveToLocalStorage();
-                await loadDevicesList();
-                updateStats();
-                alert(`✅ Dispositivo ${device.imei} ha sido DESBLOQUEADO`);
-            }
-        }
-
         async function deleteDevice(deviceId) {
             if (confirm('¿Estás seguro de que quieres eliminar este dispositivo?')) {
                 const device = findDeviceById(deviceId);
@@ -1627,7 +1667,7 @@
             document.body.removeChild(a);
         }
 
-        // Función para calcular el crédito (EXISTENTE)
+        // Función para calcular el crédito
         function calculateCredit() {
             const productId = document.getElementById('product').value;
             const months = parseInt(document.getElementById('months').value);
