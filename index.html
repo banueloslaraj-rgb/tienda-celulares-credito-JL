@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Celulares JL - Venta de Celulares a Crédito</title>
+    <title>Celulares JL - Venta de Celulares a Crédito con Sistema MDM</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Firebase SDK -->
@@ -12,7 +12,7 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, deleteDoc, onSnapshot, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-        // Tu configuración de Firebase
+        // Configuración de Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDVs8vcmrbiQHvVKoKCrbaM4qJiryGvYx4",
             authDomain: "celularesjl-c86dc.firebaseapp.com",
@@ -52,6 +52,7 @@
             --dark: #2c3e50;
             --success: #2ecc71;
             --warning: #f39c12;
+            --danger: #e74c3c;
         }
         
         body {
@@ -117,6 +118,14 @@
             background-color: #c0392b;
         }
         
+        .btn-success {
+            background-color: var(--success);
+        }
+        
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+        
         .btn-outline {
             background-color: transparent;
             border: 2px solid var(--primary);
@@ -128,7 +137,12 @@
             color: white;
         }
 
-        /* NUEVOS ESTILOS PARA EL PANEL MDM */
+        .btn-sm {
+            padding: 8px 15px;
+            font-size: 0.85rem;
+        }
+
+        /* Panel de Administración MDM */
         .admin-section {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -224,37 +238,16 @@
             gap: 15px;
             align-items: center;
             border-bottom: 1px solid #eee;
+            color: #333;
         }
 
         .device-item:last-child {
             border-bottom: none;
         }
 
-        /* ========== SOLUCIÓN: TEXTO EN NEGRO ========== */
-        .device-item > div:first-child {
-            color: #000000 !important;
-            font-weight: 600;
-        }
-
-        .device-item > div:nth-child(2) {
-            color: #000000 !important;
-            font-family: monospace;
-            font-weight: 600;
-        }
-
-        .device-header,
-        .device-item {
-            color: #333333 !important;
-        }
-
-        .device-item {
-            background-color: #ffffff;
-        }
-
         .device-item:hover {
             background-color: #f8f9fa;
         }
-        /* ========== FIN SOLUCIÓN ========== */
 
         .status-badge {
             padding: 6px 12px;
@@ -273,9 +266,9 @@
             color: var(--accent);
         }
 
-        .btn-sm {
-            padding: 8px 15px;
-            font-size: 0.85rem;
+        .status-pending {
+            background: #fff3cd;
+            color: var(--warning);
         }
 
         .firebase-status {
@@ -339,15 +332,6 @@
         
         .nav-links a:hover {
             color: var(--primary);
-        }
-        
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--secondary);
-            cursor: pointer;
         }
         
         /* Hero Section */
@@ -796,7 +780,7 @@
                     <li><a href="#inicio">Inicio</a></li>
                     <li><a href="#productos">Productos</a></li>
                     <li><a href="#credito">Crédito</a></li>
-                    <li><a href="#admin">Administración</a></li>
+                    <li><a href="#admin">Administración MDM</a></li>
                     <li><a href="#contacto">Contacto</a></li>
                 </ul>
                 <a href="#credito" class="btn">Solicitar Crédito</a>
@@ -807,8 +791,8 @@
     <!-- Hero Section -->
     <section class="hero" id="inicio">
         <div class="container">
-            <h1>Los Mejores Celulares a Crédito</h1>
-            <p>Adquiere el smartphone que siempre has querido con nuestras facilidades de pago. Aprobación inmediata y sin complicaciones.</p>
+            <h1>Los Mejores Celulares a Crédito con Sistema MDM</h1>
+            <p>Adquiere el smartphone que siempre has querido con nuestras facilidades de pago. Sistema de administración MDM integrado para tu seguridad.</p>
             <div class="hero-buttons">
                 <a href="#productos" class="btn">Ver Catálogo</a>
                 <a href="#credito" class="btn btn-outline">Calcular Crédito</a>
@@ -825,22 +809,22 @@
                     <div class="feature-icon">
                         <i class="fas fa-shield-alt"></i>
                     </div>
-                    <h3>Garantía Extendida</h3>
-                    <p>Todos nuestros dispositivos incluyen garantía de 12 meses y soporte técnico especializado.</p>
+                    <h3>Sistema MDM Integrado</h3>
+                    <p>Control total de dispositivos con nuestro sistema de Mobile Device Management. Bloqueo remoto en caso de impago.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-credit-card"></i>
                     </div>
                     <h3>Crédito Accesible</h3>
-                    <p>Aprobación inmediata con documentos básicos. Planes desde 6 hasta 24 meses.</p>
+                    <p>Aprobación inmediata con documentos básicos. Planes desde 6 hasta 24 meses con tasas competitivas.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-shipping-fast"></i>
+                        <i class="fas fa-mobile-alt"></i>
                     </div>
-                    <h3>Entrega Rápida</h3>
-                    <p>Recibe tu dispositivo en 24-48 horas después de la aprobación de tu crédito.</p>
+                    <h3>Dispositivos Premium</h3>
+                    <p>Trabajamos con las mejores marcas: Apple, Samsung, Xiaomi, Motorola y más. Garantía de 12 meses.</p>
                 </div>
             </div>
         </div>
@@ -849,7 +833,7 @@
     <!-- Productos -->
     <section class="products section-padding" id="productos">
         <div class="container">
-            <h2 class="section-title">Nuestros Productos</h2>
+            <h2 class="section-title">Catálogo de Productos</h2>
             <div class="products-filter">
                 <button class="filter-btn active" data-filter="all">Todos</button>
                 <button class="filter-btn" data-filter="apple">Apple</button>
@@ -902,33 +886,33 @@
         </div>
     </section>
 
-    <!-- Panel de Administración MDM con Firebase -->
+    <!-- Panel de Administración MDM -->
     <section class="admin-section section-padding" id="admin">
         <div class="container">
-            <h2 class="section-title" style="color: white;">Panel de Administración 
+            <h2 class="section-title" style="color: white;">Panel de Administración MDM 
                 <span id="firebase-status" class="firebase-status">Conectado a Firebase</span>
             </h2>
             
             <!-- Login para Administradores -->
             <div class="admin-login" id="admin-login">
-                <h2>Acceso Administrativo</h2>
+                <h2>Acceso Administrativo MDM</h2>
                 <form id="login-form">
                     <div class="form-group">
                         <label for="username">Usuario</label>
-                        <input type="text" id="username" required placeholder="Ingresa tu usuario">
+                        <input type="text" id="username" required placeholder="Ingresa tu usuario" value="admin">
                     </div>
                     <div class="form-group">
                         <label for="password">Contraseña</label>
-                        <input type="password" id="password" required placeholder="Ingresa tu contraseña">
+                        <input type="password" id="password" required placeholder="Ingresa tu contraseña" value="1234">
                     </div>
-                    <button type="submit" class="btn" style="width: 100%;">Acceder al Panel</button>
+                    <button type="submit" class="btn" style="width: 100%;">Acceder al Panel MDM</button>
                 </form>
                 <p style="text-align: center; margin-top: 20px; color: #666; font-size: 0.9rem;">
-                    
+                    Usuario: admin | Contraseña: 1234
                 </p>
             </div>
 
-            <!-- Panel de Administración (oculto inicialmente) -->
+            <!-- Panel de Administración MDM -->
             <div class="admin-panel" id="admin-panel">
                 <div class="admin-header">
                     <h2>Panel de Control MDM - Celulares JL 
@@ -959,7 +943,7 @@
                 </div>
 
                 <div class="admin-content">
-                    <h3 style="margin-bottom: 20px; color: var(--secondary);">Gestión de Dispositivos</h3>
+                    <h3 style="margin-bottom: 20px; color: var(--secondary);">Gestión de Dispositivos MDM</h3>
                     
                     <div class="device-list">
                         <div class="device-header">
@@ -976,18 +960,20 @@
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 40px;">
                         <div>
-                            <h4 style="margin-bottom: 15px; color: var(--secondary);">Agregar Nuevo Dispositivo</h4>
+                            <h4 style="margin-bottom: 15px; color: var(--secondary);">Registrar Nuevo Dispositivo</h4>
                             <form id="add-device-form">
                                 <div class="form-group">
-                                    <input type="text" id="client-name" placeholder="Nombre del cliente" required>
+                                    <input type="text" id="client-name" placeholder="Nombre completo del cliente" required>
                                 </div>
                                 <div class="form-group">
-                                    <input type="text" id="device-imei" placeholder="IMEI del dispositivo" required>
+                                    <input type="text" id="device-imei" placeholder="IMEI del dispositivo (15 dígitos)" required maxlength="15">
                                 </div>
                                 <div class="form-group">
                                     <input type="text" id="device-model" placeholder="Modelo del dispositivo" required>
                                 </div>
-                                <button type="submit" class="btn">Agregar Dispositivo</button>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-plus"></i> Registrar Dispositivo
+                                </button>
                             </form>
                         </div>
                         
@@ -997,7 +983,7 @@
                                 <input type="text" id="search-device" placeholder="Buscar por IMEI o cliente..." 
                                        onkeyup="searchDevices()">
                             </div>
-                            <div id="search-results">
+                            <div id="search-results" style="max-height: 200px; overflow-y: auto;">
                                 <!-- Resultados de búsqueda -->
                             </div>
                             
@@ -1020,7 +1006,7 @@
             <div class="testimonials-grid">
                 <div class="testimonial-card">
                     <div class="testimonial-text">
-                        "Excelente servicio, me aprobaron el crédito en menos de 24 horas y el teléfono llegó perfecto. Muy contento con mi nueva compra."
+                        "Excelente servicio, me aprobaron el crédito en menos de 24 horas y el teléfono llegó perfecto. El sistema MDM me da confianza."
                     </div>
                     <div class="testimonial-author">
                         <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Cliente" class="author-avatar">
@@ -1032,7 +1018,7 @@
                 </div>
                 <div class="testimonial-card">
                     <div class="testimonial-text">
-                        "El proceso fue muy sencillo y las cuotas se ajustan a mi presupuesto. Definitivamente recomiendo Celulares JL."
+                        "El proceso fue muy sencillo y las cuotas se ajustan a mi presupuesto. Definitivamente recomiendo Celulares JL por su transparencia."
                     </div>
                     <div class="testimonial-author">
                         <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Cliente" class="author-avatar">
@@ -1064,7 +1050,7 @@
             <div class="footer-content">
                 <div class="footer-column">
                     <h3>Celulares JL</h3>
-                    <p>Tu tienda de confianza para adquirir celulares a crédito con las mejores condiciones del mercado.</p>
+                    <p>Tu tienda de confianza para adquirir celulares a crédito con sistema MDM integrado para tu seguridad.</p>
                     <div class="social-links">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
                         <a href="#"><i class="fab fa-instagram"></i></a>
@@ -1078,7 +1064,7 @@
                         <li><a href="#inicio">Inicio</a></li>
                         <li><a href="#productos">Productos</a></li>
                         <li><a href="#credito">Crédito</a></li>
-                        <li><a href="#admin">Administración</a></li>
+                        <li><a href="#admin">Administración MDM</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
@@ -1099,13 +1085,13 @@
                 </div>
             </div>
             <div class="copyright">
-                <p>&copy; 2023 Celulares JL. Todos los derechos reservados.</p>
+                <p>&copy; 2024 Celulares JL. Todos los derechos reservados. | Sistema MDM Integrado</p>
             </div>
         </div>
     </footer>
 
     <script>
-        // ========== DATOS EXISTENTES ==========
+        // ========== DATOS DE PRODUCTOS ==========
         const products = [
             {
                 id: 1,
@@ -1163,7 +1149,7 @@
             }
         ];
 
-        // ========== SISTEMA FIREBASE CORREGIDO ==========
+        // ========== SISTEMA MDM CON FIREBASE ==========
         let devices = [];
         let firebaseReady = false;
 
@@ -1174,6 +1160,11 @@
                 document.getElementById('firebase-status').textContent = 'Conectado a Firebase';
                 document.getElementById('firebase-panel-status').textContent = 'Firebase ✅';
                 console.log("✅ Firebase conectado correctamente");
+                
+                // Cargar dispositivos automáticamente si está logueado
+                if (document.getElementById('admin-panel').style.display === 'block') {
+                    loadDevicesList();
+                }
             } else {
                 firebaseReady = false;
                 document.getElementById('firebase-status').textContent = 'Modo Local';
@@ -1185,27 +1176,28 @@
 
         // ========== FUNCIONES FIREBASE CORREGIDAS ==========
 
-        // Función para guardar dispositivo en Firebase - CORREGIDA
+        // Función para guardar dispositivo en Firebase - ESTRUCTURA COMPATIBLE CON ANDROID
         async function saveDeviceToFirebase(deviceData) {
             if (!firebaseReady) return null;
             
             try {
-                // USAR EL IMEI COMO ID DEL DOCUMENTO (para que coincida con la app)
+                // USAR EL IMEI COMO ID DEL DOCUMENTO (para compatibilidad con la app Android)
                 const deviceRef = firebaseModules.doc(firestoreDB, "devices", deviceData.imei);
                 
+                // ESTRUCTURA QUE ESPERA LA APP ANDROID
                 await firebaseModules.setDoc(deviceRef, {
-                    deviceId: deviceData.imei,  // ← ESTE CAMPO ES CLAVE para la app
+                    imei: deviceData.imei,           // ← CAMPO PRINCIPAL para la app
                     model: deviceData.model,
-                    status: "active",
+                    status: "active",                // ← Estado inicial activo
                     clientName: deviceData.clientName,
-                    imei: deviceData.imei,      // ← Mantener también el IMEI original
-                    paymentStatus: deviceData.paymentStatus || "al día",
-                    lastPayment: deviceData.lastPayment || new Date().toISOString().split('T')[0],
+                    // Campos adicionales para la web
+                    paymentStatus: "al día",
+                    lastPayment: new Date().toISOString().split('T')[0],
                     created: new Date().toISOString(),
                     lastUpdated: new Date().toISOString()
                 });
                 
-                console.log("✅ Dispositivo guardado en Firebase con ID:", deviceData.imei);
+                console.log("✅ Dispositivo guardado en Firebase con estructura compatible");
                 return deviceData.imei;
             } catch (error) {
                 console.error("❌ Error guardando en Firebase:", error);
@@ -1213,7 +1205,7 @@
             }
         }
 
-        // Función para cargar dispositivos desde Firebase - CORREGIDA
+        // Función para cargar dispositivos desde Firebase
         async function loadDevicesFromFirebase() {
             if (!firebaseReady) return [];
             
@@ -1245,32 +1237,21 @@
             }
         }
 
-        // Función para actualizar dispositivo en Firebase - CORREGIDA
+        // Función para actualizar dispositivo en Firebase
         async function updateDeviceInFirebase(deviceId, updates) {
             if (!firebaseReady) return false;
             
             try {
-                // Asegurar que deviceId esté en los updates si se está actualizando el estado
                 const updateData = {
                     ...updates,
                     lastUpdated: new Date().toISOString()
                 };
                 
-                // Si estamos actualizando el estado, mantener la estructura que espera la app
-                if (updates.status) {
-                    updateData.status = updates.status;
-                    // Cuando bloqueamos, también actualizar clientName si es necesario
-                    if (updates.status === 'blocked' && updates.clientName) {
-                        updateData.clientName = updates.clientName;
-                    } else if (updates.status === 'active') {
-                        updateData.clientName = ""; // Limpiar nombre al desbloquear
-                    }
-                }
-                
                 await firebaseModules.updateDoc(
                     firebaseModules.doc(firestoreDB, "devices", deviceId),
                     updateData
                 );
+                
                 console.log("✅ Dispositivo actualizado en Firebase:", deviceId);
                 return true;
             } catch (error) {
@@ -1295,62 +1276,56 @@
             }
         }
 
-        // Guardar en localStorage como backup
-        function saveToLocalStorage() {
-            localStorage.setItem('celularesjl_devices', JSON.stringify(devices));
-        }
-
-        // Cargar desde localStorage
-        function loadFromLocalStorage() {
-            const localDevices = JSON.parse(localStorage.getItem('celularesjl_devices')) || [];
-            return localDevices;
-        }
-
-        // ========== FUNCIONES MDM CORREGIDAS ==========
+        // ========== FUNCIONES MDM PRINCIPALES ==========
 
         async function blockDevice(deviceId) {
             const device = findDeviceById(deviceId);
             if (device) {
-                // ACTUALIZAR EN FIREBASE CON LA ESTRUCTURA CORRECTA
-                if (device.firebaseId) {
-                    await updateDeviceInFirebase(device.firebaseId, { 
-                        status: 'blocked',
-                        clientName: device.clientName  // ← ENVIAR EL NOMBRE DEL CLIENTE
-                    });
+                if (confirm(`¿Estás seguro de BLOQUEAR el dispositivo?\n\nCliente: ${device.clientName}\nIMEI: ${device.imei}`)) {
+                    // ACTUALIZAR EN FIREBASE CON LA ESTRUCTURA CORRECTA
+                    if (device.firebaseId) {
+                        await updateDeviceInFirebase(device.firebaseId, { 
+                            status: 'blocked',
+                            clientName: device.clientName  // ← MANTENER EL NOMBRE PARA QUE LA APP LO MUESTRE
+                        });
+                    }
+                    
+                    // También actualizar localmente
+                    device.status = 'blocked';
+                    saveToLocalStorage();
+                    await loadDevicesList();
+                    updateStats();
+                    
+                    alert(`📵 DISPOSITIVO BLOQUEADO\n\nCliente: ${device.clientName}\nIMEI: ${device.imei}\nModelo: ${device.model}\n\nEl dispositivo se bloqueará automáticamente en la app Android.`);
                 }
-                
-                // También actualizar localmente
-                device.status = 'blocked';
-                saveToLocalStorage();
-                await loadDevicesList();
-                updateStats();
-                alert(`📵 Dispositivo ${device.imei} ha sido BLOQUEADO\nCliente: ${device.clientName}`);
             }
         }
 
         async function unblockDevice(deviceId) {
             const device = findDeviceById(deviceId);
             if (device) {
-                // ACTUALIZAR EN FIREBASE CON LA ESTRUCTURA CORRECTA
-                if (device.firebaseId) {
-                    await updateDeviceInFirebase(device.firebaseId, { 
-                        status: 'active',
-                        clientName: ""  // ← LIMPIAR EL NOMBRE AL DESBLOQUEAR
-                    });
+                if (confirm(`¿Estás seguro de DESBLOQUEAR el dispositivo?\n\nIMEI: ${device.imei}`)) {
+                    // ACTUALIZAR EN FIREBASE CON LA ESTRUCTURA CORRECTA
+                    if (device.firebaseId) {
+                        await updateDeviceInFirebase(device.firebaseId, { 
+                            status: 'active',
+                            clientName: ""  // ← LIMPIAR NOMBRE AL DESBLOQUEAR
+                        });
+                    }
+                    
+                    // También actualizar localmente
+                    device.status = 'active';
+                    saveToLocalStorage();
+                    await loadDevicesList();
+                    updateStats();
+                    
+                    alert(`✅ DISPOSITIVO DESBLOQUEADO\n\nIMEI: ${device.imei}\n\nEl dispositivo se desbloqueará automáticamente en la app Android.`);
                 }
-                
-                // También actualizar localmente
-                device.status = 'active';
-                saveToLocalStorage();
-                await loadDevicesList();
-                updateStats();
-                alert(`✅ Dispositivo ${device.imei} ha sido DESBLOQUEADO`);
             }
         }
 
-        // ========== CÓDIGO EXISTENTE (sin cambios) ==========
+        // ========== CÓDIGO PRINCIPAL ==========
 
-        // Cargar productos en la página
         document.addEventListener('DOMContentLoaded', function() {
             const productsContainer = document.getElementById('products-container');
             const productSelect = document.getElementById('product');
@@ -1435,7 +1410,7 @@
                     document.getElementById('admin-panel').style.display = 'block';
                     await loadAdminPanel();
                 } else {
-                    alert('Usuario o contraseña incorrectos');
+                    alert('❌ Usuario o contraseña incorrectos\n\nUsuario: admin\nContraseña: 1234');
                 }
             });
 
@@ -1445,6 +1420,19 @@
                 const clientName = document.getElementById('client-name').value;
                 const imei = document.getElementById('device-imei').value;
                 const model = document.getElementById('device-model').value;
+                
+                // Validar IMEI (15 dígitos)
+                if (imei.length !== 15 || !/^\d+$/.test(imei)) {
+                    alert('❌ El IMEI debe tener exactamente 15 dígitos numéricos');
+                    return;
+                }
+                
+                // Verificar si el IMEI ya existe
+                const existingDevice = devices.find(d => d.imei === imei);
+                if (existingDevice) {
+                    alert(`❌ El IMEI ${imei} ya está registrado\nCliente: ${existingDevice.clientName}`);
+                    return;
+                }
                 
                 const newDevice = {
                     clientName: clientName,
@@ -1463,21 +1451,23 @@
                     // Éxito en Firebase
                     newDevice.firebaseId = firebaseId;
                     devices.push(newDevice);
+                    alert(`✅ Dispositivo registrado exitosamente\n\nCliente: ${clientName}\nIMEI: ${imei}\nModelo: ${model}\n\nEl dispositivo aparecerá en la app Android automáticamente.`);
                 } else {
                     // Fallback a localStorage
                     newDevice.id = 'local_' + Date.now();
                     devices.push(newDevice);
                     saveToLocalStorage();
+                    alert(`⚠️ Dispositivo registrado en modo local\n\nCliente: ${clientName}\nIMEI: ${imei}\n\nFirebase no está disponible, usando almacenamiento local.`);
                 }
                 
                 await loadDevicesList();
                 updateStats();
                 document.getElementById('add-device-form').reset();
-                alert('Dispositivo agregado exitosamente');
             });
         });
 
-        // ========== FUNCIONES MDM ACTUALIZADAS ==========
+        // ========== FUNCIONES MDM COMPLEMENTARIAS ==========
+
         async function loadAdminPanel() {
             await loadDevicesList();
             updateStats();
@@ -1512,26 +1502,6 @@
             }
         }
 
-        async function migrateToFirebase(localDevices) {
-            console.log("🔄 Migrando datos locales a Firebase...");
-            let migratedCount = 0;
-            
-            for (const device of localDevices) {
-                if (!device.firebaseId) {
-                    const firebaseId = await saveDeviceToFirebase(device);
-                    if (firebaseId) {
-                        device.firebaseId = firebaseId;
-                        migratedCount++;
-                    }
-                }
-            }
-            
-            if (migratedCount > 0) {
-                saveToLocalStorage();
-                console.log(`✅ ${migratedCount} dispositivos migrados a Firebase`);
-            }
-        }
-
         function renderDevicesList() {
             const devicesList = document.getElementById('devices-list');
             devicesList.innerHTML = '';
@@ -1539,8 +1509,9 @@
             if (devices.length === 0) {
                 devicesList.innerHTML = `
                     <div style="padding: 40px; text-align: center; color: #666;">
-                        <i class="fas fa-mobile-alt" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                        <i class="fas fa-mobile-alt" style="font-size: 3rem; margin-bottom: 15px; color: #ddd;"></i>
                         <p>No hay dispositivos registrados aún.</p>
+                        <p style="font-size: 0.9rem; margin-top: 10px;">Usa el formulario para registrar el primer dispositivo.</p>
                     </div>
                 `;
                 return;
@@ -1551,10 +1522,10 @@
                 deviceItem.className = 'device-item';
                 deviceItem.innerHTML = `
                     <div>
-                        <strong>${device.clientName}</strong><br>
-                        <small>${device.model}</small>
+                        <strong style="color: #2c3e50;">${device.clientName}</strong><br>
+                        <small style="color: #666;">${device.model}</small>
                     </div>
-                    <div>${device.imei}</div>
+                    <div style="font-family: monospace; font-weight: 600; color: #2c3e50;">${device.imei}</div>
                     <div>
                         <span class="status-badge ${device.paymentStatus === 'al día' ? 'status-active' : 'status-blocked'}">
                             ${device.paymentStatus}
@@ -1567,8 +1538,12 @@
                     </div>
                     <div>
                         ${device.status === 'active' 
-                            ? `<button class="btn btn-accent btn-sm" onclick="blockDevice('${device.firebaseId || device.id}')">Bloquear</button>`
-                            : `<button class="btn btn-sm" onclick="unblockDevice('${device.firebaseId || device.id}')">Desbloquear</button>`
+                            ? `<button class="btn btn-accent btn-sm" onclick="blockDevice('${device.firebaseId || device.id}')">
+                                  <i class="fas fa-lock"></i> Bloquear
+                               </button>`
+                            : `<button class="btn btn-success btn-sm" onclick="unblockDevice('${device.firebaseId || device.id}')">
+                                  <i class="fas fa-unlock"></i> Desbloquear
+                               </button>`
                         }
                         <button class="btn btn-outline btn-sm" onclick="deleteDevice('${device.firebaseId || device.id}')" style="margin-left: 5px;">
                             <i class="fas fa-trash"></i>
@@ -1592,9 +1567,9 @@
         }
 
         async function deleteDevice(deviceId) {
-            if (confirm('¿Estás seguro de que quieres eliminar este dispositivo?')) {
-                const device = findDeviceById(deviceId);
-                if (device) {
+            const device = findDeviceById(deviceId);
+            if (device) {
+                if (confirm(`¿Estás seguro de ELIMINAR este dispositivo?\n\nCliente: ${device.clientName}\nIMEI: ${device.imei}\n\nEsta acción no se puede deshacer.`)) {
                     // Eliminar de Firebase si existe
                     if (device.firebaseId) {
                         await deleteDeviceFromFirebase(device.firebaseId);
@@ -1605,6 +1580,8 @@
                     saveToLocalStorage();
                     await loadDevicesList();
                     updateStats();
+                    
+                    alert('✅ Dispositivo eliminado exitosamente');
                 }
             }
         }
@@ -1617,17 +1594,21 @@
             const searchTerm = document.getElementById('search-device').value.toLowerCase();
             const results = devices.filter(device => 
                 device.clientName.toLowerCase().includes(searchTerm) || 
-                device.imei.includes(searchTerm)
+                device.imei.includes(searchTerm) ||
+                device.model.toLowerCase().includes(searchTerm)
             );
             
             const resultsDiv = document.getElementById('search-results');
-            if (searchTerm.length > 0) {
+            if (searchTerm.length > 0 && results.length > 0) {
                 resultsDiv.innerHTML = results.map(device => `
-                    <div style="padding: 10px; border-bottom: 1px solid #eee;">
+                    <div style="padding: 10px; border-bottom: 1px solid #eee; cursor: pointer;" 
+                         onclick="document.getElementById('search-device').value='${device.imei}'; document.getElementById('search-results').innerHTML='';">
                         <strong>${device.clientName}</strong> - ${device.model}<br>
-                        <small>IMEI: ${device.imei} | Estado: ${device.status}</small>
+                        <small>IMEI: ${device.imei} | Estado: <span class="${device.status === 'active' ? 'status-active' : 'status-blocked'}" style="padding: 2px 6px; border-radius: 10px; font-size: 0.7rem;">${device.status}</span></small>
                     </div>
                 `).join('');
+            } else if (searchTerm.length > 0) {
+                resultsDiv.innerHTML = '<div style="padding: 10px; color: #666; text-align: center;">No se encontraron dispositivos</div>';
             } else {
                 resultsDiv.innerHTML = '';
             }
@@ -1639,21 +1620,53 @@
             document.getElementById('login-form').reset();
         }
 
-        // Función para exportar datos a Excel
+        // ========== FUNCIONES DE ALMACENAMIENTO LOCAL ==========
+
+        function saveToLocalStorage() {
+            localStorage.setItem('celularesjl_devices', JSON.stringify(devices));
+        }
+
+        function loadFromLocalStorage() {
+            const localDevices = JSON.parse(localStorage.getItem('celularesjl_devices')) || [];
+            return localDevices;
+        }
+
+        async function migrateToFirebase(localDevices) {
+            console.log("🔄 Migrando datos locales a Firebase...");
+            let migratedCount = 0;
+            
+            for (const device of localDevices) {
+                if (!device.firebaseId) {
+                    const firebaseId = await saveDeviceToFirebase(device);
+                    if (firebaseId) {
+                        device.firebaseId = firebaseId;
+                        migratedCount++;
+                    }
+                }
+            }
+            
+            if (migratedCount > 0) {
+                saveToLocalStorage();
+                console.log(`✅ ${migratedCount} dispositivos migrados a Firebase`);
+            }
+        }
+
+        // ========== FUNCIONES DE EXPORTACIÓN ==========
+
         function exportSalesData() {
             const salesData = devices.map(device => ({
                 'Cliente': device.clientName,
                 'Modelo': device.model,
                 'IMEI': device.imei,
-                'Estado': device.status,
+                'Estado MDM': device.status,
                 'Estado de Pago': device.paymentStatus,
                 'Último Pago': device.lastPayment,
                 'Fecha Registro': device.created
             }));
             
-            let csv = 'Cliente,Modelo,IMEI,Estado,Estado de Pago,Último Pago,Fecha Registro\n';
+            let csv = 'Cliente,Modelo,IMEI,Estado MDM,Estado de Pago,Último Pago,Fecha Registro\n';
             salesData.forEach(row => {
-                csv += `"${row.Cliente}","${row.Modelo}","${row.IMEI}","${row.Estado}","${row['Estado de Pago']}","${row['Último Pago']}","${row['Fecha Registro']}"\n`;
+                csv += `"${row.Cliente}","${row.Modelo}","${row.IMEI}","${row['Estado MDM']}","${row['Estado de Pago']}","${row['Último Pago']}","${row['Fecha Registro']}"\n`;
             });
             
             const blob = new Blob([csv], { type: 'text/csv' });
@@ -1661,13 +1674,16 @@
             const a = document.createElement('a');
             a.setAttribute('hidden', '');
             a.setAttribute('href', url);
-            a.setAttribute('download', `ventas-celularesjl-${new Date().toISOString().split('T')[0]}.csv`);
+            a.setAttribute('download', `dispositivos-celularesjl-${new Date().toISOString().split('T')[0]}.csv`);
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+            
+            alert('✅ Datos exportados exitosamente');
         }
 
-        // Función para calcular el crédito
+        // ========== CALCULADORA DE CRÉDITO ==========
+
         function calculateCredit() {
             const productId = document.getElementById('product').value;
             const months = parseInt(document.getElementById('months').value);
@@ -1738,9 +1754,8 @@
 
         // Función para guardar ventas
         async function saveSale(saleData) {
-            // Aquí puedes implementar el guardado de ventas en Firebase
             console.log("💳 Venta procesada:", saleData);
-            alert('¡Crédito solicitado exitosamente! Nos pondremos en contacto contigo.');
+            alert('¡Crédito solicitado exitosamente! Nos pondremos en contacto contigo para finalizar el proceso.');
             
             // Guardar en Firebase si está configurado
             if (firebaseReady) {
