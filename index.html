@@ -908,7 +908,7 @@
                     <button type="submit" class="btn" style="width: 100%;">Acceder al Panel MDM</button>
                 </form>
                 <p style="text-align: center; margin-top: 20px; color: #666; font-size: 0.9rem;">
-                    
+                    Credenciales de prueba: admin / 1234
                 </p>
             </div>
 
@@ -1279,15 +1279,25 @@
         // ========== FUNCIONES MDM PRINCIPALES ==========
 
         async function blockDevice(deviceId) {
-            const device = findDeviceById(deviceId);
-            if (device) {
+            try {
+                const device = findDeviceById(deviceId);
+                if (!device) {
+                    alert('❌ Dispositivo no encontrado');
+                    return;
+                }
+                
                 if (confirm(`¿Estás seguro de BLOQUEAR el dispositivo?\n\nCliente: ${device.clientName}\nIMEI: ${device.imei}`)) {
                     // ACTUALIZAR EN FIREBASE CON LA ESTRUCTURA CORRECTA
-                    if (device.firebaseId) {
-                        await updateDeviceInFirebase(device.firebaseId, { 
+                    if (device.firebaseId && firebaseReady) {
+                        const success = await updateDeviceInFirebase(device.firebaseId, { 
                             status: 'blocked',
                             clientName: device.clientName  // ← MANTENER EL NOMBRE PARA QUE LA APP LO MUESTRE
                         });
+                        
+                        if (!success) {
+                            alert('⚠️ No se pudo actualizar en Firebase. Verifica la conexión.');
+                            return;
+                        }
                     }
                     
                     // También actualizar localmente
@@ -1298,19 +1308,32 @@
                     
                     alert(`📵 DISPOSITIVO BLOQUEADO\n\nCliente: ${device.clientName}\nIMEI: ${device.imei}\nModelo: ${device.model}\n\nEl dispositivo se bloqueará automáticamente en la app Android.`);
                 }
+            } catch (error) {
+                console.error('Error bloqueando dispositivo:', error);
+                alert('❌ Error al bloquear el dispositivo');
             }
         }
 
         async function unblockDevice(deviceId) {
-            const device = findDeviceById(deviceId);
-            if (device) {
+            try {
+                const device = findDeviceById(deviceId);
+                if (!device) {
+                    alert('❌ Dispositivo no encontrado');
+                    return;
+                }
+                
                 if (confirm(`¿Estás seguro de DESBLOQUEAR el dispositivo?\n\nIMEI: ${device.imei}`)) {
                     // ACTUALIZAR EN FIREBASE CON LA ESTRUCTURA CORRECTA
-                    if (device.firebaseId) {
-                        await updateDeviceInFirebase(device.firebaseId, { 
+                    if (device.firebaseId && firebaseReady) {
+                        const success = await updateDeviceInFirebase(device.firebaseId, { 
                             status: 'active',
                             clientName: ""  // ← LIMPIAR NOMBRE AL DESBLOQUEAR
                         });
+                        
+                        if (!success) {
+                            alert('⚠️ No se pudo actualizar en Firebase. Verifica la conexión.');
+                            return;
+                        }
                     }
                     
                     // También actualizar localmente
@@ -1321,6 +1344,9 @@
                     
                     alert(`✅ DISPOSITIVO DESBLOQUEADO\n\nIMEI: ${device.imei}\n\nEl dispositivo se desbloqueará automáticamente en la app Android.`);
                 }
+            } catch (error) {
+                console.error('Error desbloqueando dispositivo:', error);
+                alert('❌ Error al desbloquear el dispositivo');
             }
         }
 
@@ -1399,18 +1425,24 @@
                 }
             });
 
-            // ========== SISTEMA DE LOGIN MDM ==========
+            // ========== SISTEMA DE LOGIN MDM - CORREGIDO ==========
             document.getElementById('login-form').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const username = document.getElementById('username').value;
                 const password = document.getElementById('password').value;
                 
-                if (username === 'admin' && password === '1234') {
+                // CREDENCIALES SEGURAS - NO MOSTRAR EN ALERTA
+                const ADMIN_CREDENTIALS = {
+                    username: 'admin',
+                    password: '1234'
+                };
+                
+                if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
                     document.getElementById('admin-login').style.display = 'none';
                     document.getElementById('admin-panel').style.display = 'block';
                     await loadAdminPanel();
                 } else {
-                    alert('❌ Usuario o contraseña incorrectos\n\nUsuario: admin\nContraseña: 1234');
+                    alert('❌ Usuario o contraseña incorrectos\n\nContacta al administrador del sistema.');
                 }
             });
 
@@ -1567,8 +1599,13 @@
         }
 
         async function deleteDevice(deviceId) {
-            const device = findDeviceById(deviceId);
-            if (device) {
+            try {
+                const device = findDeviceById(deviceId);
+                if (!device) {
+                    alert('❌ Dispositivo no encontrado');
+                    return;
+                }
+                
                 if (confirm(`¿Estás seguro de ELIMINAR este dispositivo?\n\nCliente: ${device.clientName}\nIMEI: ${device.imei}\n\nEsta acción no se puede deshacer.`)) {
                     // Eliminar de Firebase si existe
                     if (device.firebaseId) {
@@ -1583,11 +1620,19 @@
                     
                     alert('✅ Dispositivo eliminado exitosamente');
                 }
+            } catch (error) {
+                console.error('Error eliminando dispositivo:', error);
+                alert('❌ Error al eliminar el dispositivo');
             }
         }
 
+        // FUNCIÓN CORREGIDA - Buscar dispositivo por ID
         function findDeviceById(deviceId) {
-            return devices.find(d => (d.firebaseId || d.id) === deviceId);
+            return devices.find(d => {
+                // Buscar por firebaseId O por id local
+                const idToCompare = d.firebaseId || d.id;
+                return idToCompare === deviceId;
+            });
         }
 
         function searchDevices() {
