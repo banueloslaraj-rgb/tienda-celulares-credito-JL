@@ -271,11 +271,6 @@
             color: var(--warning);
         }
 
-        .status-android {
-            background: #e8f4fd;
-            color: #3498db;
-        }
-
         .firebase-status {
             background: #2ecc71;
             color: white;
@@ -289,16 +284,487 @@
             background: #e74c3c;
         }
 
-        .device-type-badge {
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            margin-left: 5px;
+        /* Header */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            color: var(--primary);
+            margin-right: 10px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--secondary);
+            font-weight: 600;
+            transition: color 0.3s;
+            font-size: 1.05rem;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.9)), url('https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 120px 0;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            opacity: 0.9;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        /* Features */
+        .features {
+            background-color: white;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+        
+        /* Productos */
+        .products {
+            background-color: var(--light);
+        }
+        
+        .products-filter {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .filter-btn {
+            padding: 8px 20px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        
+        .product-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .product-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--accent);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .product-info {
+            padding: 20px;
+            position: relative;
+        }
+        
+        .product-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+        
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+        
+        .product-description {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+        
+        .product-features {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+        
+        .product-features li {
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        
+        .product-features li i {
+            color: var(--success);
+            margin-right: 5px;
+        }
+        
+        /* Calculadora de crédito */
+        .calculator {
+            background-color: white;
+        }
+        
+        .calculator-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+        
+        .calculator-form {
+            background: var(--light);
+            padding: 30px;
+            border-radius: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .calculator-result {
+            background: var(--secondary);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .result-total {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-top: 20px;
+        }
+        
+        /* Testimonios */
+        .testimonials {
+            background: var(--light);
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .testimonial-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 20px;
+            color: #555;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+        
+        .author-info h4 {
+            margin-bottom: 5px;
+            color: var(--secondary);
+        }
+        
+        .author-info p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--secondary);
+            color: white;
+            padding: 70px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 25px;
+            font-size: 1.3rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--primary);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-column a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column a:hover {
+            color: white;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #bdc3c7;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .calculator-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
 
-        /* ... (el resto del CSS permanece igual) ... */
+            .device-header, .device-item {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 15px 0;
+            }
+            
+            .nav-links {
+                margin-top: 20px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav-links li {
+                margin: 0 10px 10px;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 250px;
+                text-align: center;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .section-padding {
+                padding: 60px 0;
+            }
+            
+            .feature-card {
+                padding: 30px 20px;
+            }
 
+            .admin-stats {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -471,8 +937,8 @@
                         <span class="stat-label">Dispositivos Bloqueados</span>
                     </div>
                     <div class="stat-card">
-                        <span class="stat-number" id="android-devices">0</span>
-                        <span class="stat-label">Usan Android ID</span>
+                        <span class="stat-number" id="pending-payments">0</span>
+                        <span class="stat-label">Pagos Pendientes</span>
                     </div>
                 </div>
 
@@ -482,7 +948,7 @@
                     <div class="device-list">
                         <div class="device-header">
                             <div>Cliente / Dispositivo</div>
-                            <div>Identificador</div>
+                            <div>IMEI</div>
                             <div>Estado de Pago</div>
                             <div>Estado MDM</div>
                             <div>Acciones</div>
@@ -514,7 +980,7 @@
                         <div>
                             <h4 style="margin-bottom: 15px; color: var(--secondary);">Búsqueda Rápida</h4>
                             <div class="form-group">
-                                <input type="text" id="search-device" placeholder="Buscar por IMEI, Android ID o cliente..." 
+                                <input type="text" id="search-device" placeholder="Buscar por IMEI o cliente..." 
                                        onkeyup="searchDevices()">
                             </div>
                             <div id="search-results" style="max-height: 200px; overflow-y: auto;">
@@ -710,31 +1176,28 @@
 
         // ========== FUNCIONES FIREBASE CORREGIDAS ==========
 
-        // Función para guardar dispositivo en Firebase - ESTRUCTURA COMPATIBLE CON ANDROID CORREGIDA
+        // Función para guardar dispositivo en Firebase - ESTRUCTURA COMPATIBLE CON ANDROID
         async function saveDeviceToFirebase(deviceData) {
             if (!firebaseReady) return null;
             
             try {
-                // USAR EL IMEI/AndroidID COMO ID DEL DOCUMENTO
+                // USAR EL IMEI COMO ID DEL DOCUMENTO (para compatibilidad con la app Android)
                 const deviceRef = firebaseModules.doc(firestoreDB, "devices", deviceData.imei);
                 
-                // ESTRUCTURA COMPATIBLE CON LA APP ANDROID CORREGIDA
+                // ESTRUCTURA QUE ESPERA LA APP ANDROID
                 await firebaseModules.setDoc(deviceRef, {
-                    imei: deviceData.imei,
-                    deviceType: deviceData.imei.startsWith("ANDROID_") ? "android_id" : "imei",
-                    cleanImei: deviceData.imei.startsWith("ANDROID_") ? deviceData.imei.substring(8) : deviceData.imei,
+                    imei: deviceData.imei,           // ← CAMPO PRINCIPAL para la app
                     model: deviceData.model,
-                    status: "active",
+                    status: "active",                // ← Estado inicial activo
                     clientName: deviceData.clientName,
+                    // Campos adicionales para la web
                     paymentStatus: "al día",
                     lastPayment: new Date().toISOString().split('T')[0],
                     created: new Date().toISOString(),
-                    lastUpdated: new Date().toISOString(),
-                    brand: deviceData.brand || "Desconocido",
-                    androidVersion: deviceData.androidVersion || "Desconocido"
+                    lastUpdated: new Date().toISOString()
                 });
                 
-                console.log("✅ Dispositivo guardado en Firebase con estructura compatible:", deviceData.imei);
+                console.log("✅ Dispositivo guardado en Firebase con estructura compatible");
                 return deviceData.imei;
             } catch (error) {
                 console.error("❌ Error guardando en Firebase:", error);
@@ -756,16 +1219,13 @@
                     const data = doc.data();
                     firebaseDevices.push({ 
                         firebaseId: doc.id, 
-                        clientName: data.clientName || 'Por asignar',
+                        clientName: data.clientName || '',
                         imei: data.imei || doc.id,
                         model: data.model || 'Desconocido',
                         status: data.status || 'active',
                         paymentStatus: data.paymentStatus || 'al día',
                         lastPayment: data.lastPayment || new Date().toISOString().split('T')[0],
-                        created: data.created || new Date().toISOString(),
-                        deviceType: data.deviceType || 'imei',
-                        brand: data.brand || 'Desconocido',
-                        androidVersion: data.androidVersion || 'Desconocido'
+                        created: data.created || new Date().toISOString()
                     });
                 });
                 
@@ -826,12 +1286,12 @@
                     return;
                 }
                 
-                if (confirm(`¿Estás seguro de BLOQUEAR el dispositivo?\n\nCliente: ${device.clientName}\nID: ${device.imei}`)) {
+                if (confirm(`¿Estás seguro de BLOQUEAR el dispositivo?\n\nCliente: ${device.clientName}\nIMEI: ${device.imei}`)) {
                     // ACTUALIZAR EN FIREBASE CON LA ESTRUCTURA CORRECTA
                     if (device.firebaseId && firebaseReady) {
                         const success = await updateDeviceInFirebase(device.firebaseId, { 
                             status: 'blocked',
-                            clientName: device.clientName
+                            clientName: device.clientName  // ← MANTENER EL NOMBRE PARA QUE LA APP LO MUESTRE
                         });
                         
                         if (!success) {
@@ -846,7 +1306,7 @@
                     await loadDevicesList();
                     updateStats();
                     
-                    alert(`📵 DISPOSITIVO BLOQUEADO\n\nCliente: ${device.clientName}\nID: ${device.imei}\n\nEl dispositivo se bloqueará automáticamente en la app Android.`);
+                    alert(`📵 DISPOSITIVO BLOQUEADO\n\nCliente: ${device.clientName}\nIMEI: ${device.imei}\nModelo: ${device.model}\n\nEl dispositivo se bloqueará automáticamente en la app Android.`);
                 }
             } catch (error) {
                 console.error('Error bloqueando dispositivo:', error);
@@ -862,11 +1322,12 @@
                     return;
                 }
                 
-                if (confirm(`¿Estás seguro de DESBLOQUEAR el dispositivo?\n\nID: ${device.imei}`)) {
+                if (confirm(`¿Estás seguro de DESBLOQUEAR el dispositivo?\n\nIMEI: ${device.imei}`)) {
                     // ACTUALIZAR EN FIREBASE CON LA ESTRUCTURA CORRECTA
                     if (device.firebaseId && firebaseReady) {
                         const success = await updateDeviceInFirebase(device.firebaseId, { 
-                            status: 'active'
+                            status: 'active',
+                            clientName: ""  // ← LIMPIAR NOMBRE AL DESBLOQUEAR
                         });
                         
                         if (!success) {
@@ -881,7 +1342,7 @@
                     await loadDevicesList();
                     updateStats();
                     
-                    alert(`✅ DISPOSITIVO DESBLOQUEADO\n\nID: ${device.imei}\n\nEl dispositivo se desbloqueará automáticamente en la app Android.`);
+                    alert(`✅ DISPOSITIVO DESBLOQUEADO\n\nIMEI: ${device.imei}\n\nEl dispositivo se desbloqueará automáticamente en la app Android.`);
                 }
             } catch (error) {
                 console.error('Error desbloqueando dispositivo:', error);
@@ -1089,20 +1550,14 @@
             }
             
             devices.forEach(device => {
-                const isAndroidId = device.imei.startsWith("ANDROID_");
-                const displayId = isAndroidId ? device.imei.substring(8) : device.imei;
-                
                 const deviceItem = document.createElement('div');
                 deviceItem.className = 'device-item';
                 deviceItem.innerHTML = `
                     <div>
                         <strong style="color: #2c3e50;">${device.clientName}</strong><br>
                         <small style="color: #666;">${device.model}</small>
-                        ${isAndroidId ? '<span class="device-type-badge status-android">Android ID</span>' : '<span class="device-type-badge status-active">IMEI</span>'}
                     </div>
-                    <div style="font-family: monospace; font-weight: 600; color: #2c3e50;">
-                        ${displayId}
-                    </div>
+                    <div style="font-family: monospace; font-weight: 600; color: #2c3e50;">${device.imei}</div>
                     <div>
                         <span class="status-badge ${device.paymentStatus === 'al día' ? 'status-active' : 'status-blocked'}">
                             ${device.paymentStatus}
@@ -1135,12 +1590,12 @@
             const total = devices.length;
             const active = devices.filter(d => d.status === 'active').length;
             const blocked = devices.filter(d => d.status === 'blocked').length;
-            const androidDevices = devices.filter(d => d.imei.startsWith("ANDROID_")).length;
+            const pending = devices.filter(d => d.paymentStatus === 'atrasado').length;
             
             document.getElementById('total-devices').textContent = total;
             document.getElementById('active-devices').textContent = active;
             document.getElementById('blocked-devices').textContent = blocked;
-            document.getElementById('android-devices').textContent = androidDevices;
+            document.getElementById('pending-payments').textContent = pending;
         }
 
         async function deleteDevice(deviceId) {
@@ -1151,7 +1606,7 @@
                     return;
                 }
                 
-                if (confirm(`¿Estás seguro de ELIMINAR este dispositivo?\n\nCliente: ${device.clientName}\nID: ${device.imei}\n\nEsta acción no se puede deshacer.`)) {
+                if (confirm(`¿Estás seguro de ELIMINAR este dispositivo?\n\nCliente: ${device.clientName}\nIMEI: ${device.imei}\n\nEsta acción no se puede deshacer.`)) {
                     // Eliminar de Firebase si existe
                     if (device.firebaseId) {
                         await deleteDeviceFromFirebase(device.firebaseId);
@@ -1184,7 +1639,7 @@
             const searchTerm = document.getElementById('search-device').value.toLowerCase();
             const results = devices.filter(device => 
                 device.clientName.toLowerCase().includes(searchTerm) || 
-                device.imei.toLowerCase().includes(searchTerm) ||
+                device.imei.includes(searchTerm) ||
                 device.model.toLowerCase().includes(searchTerm)
             );
             
@@ -1194,7 +1649,7 @@
                     <div style="padding: 10px; border-bottom: 1px solid #eee; cursor: pointer;" 
                          onclick="document.getElementById('search-device').value='${device.imei}'; document.getElementById('search-results').innerHTML='';">
                         <strong>${device.clientName}</strong> - ${device.model}<br>
-                        <small>ID: ${device.imei} | Estado: <span class="${device.status === 'active' ? 'status-active' : 'status-blocked'}" style="padding: 2px 6px; border-radius: 10px; font-size: 0.7rem;">${device.status}</span></small>
+                        <small>IMEI: ${device.imei} | Estado: <span class="${device.status === 'active' ? 'status-active' : 'status-blocked'}" style="padding: 2px 6px; border-radius: 10px; font-size: 0.7rem;">${device.status}</span></small>
                     </div>
                 `).join('');
             } else if (searchTerm.length > 0) {
@@ -1247,17 +1702,16 @@
             const salesData = devices.map(device => ({
                 'Cliente': device.clientName,
                 'Modelo': device.model,
-                'Identificador': device.imei,
-                'Tipo': device.imei.startsWith("ANDROID_") ? "Android ID" : "IMEI",
+                'IMEI': device.imei,
                 'Estado MDM': device.status,
                 'Estado de Pago': device.paymentStatus,
                 'Último Pago': device.lastPayment,
                 'Fecha Registro': device.created
             }));
             
-            let csv = 'Cliente,Modelo,Identificador,Tipo,Estado MDM,Estado de Pago,Último Pago,Fecha Registro\n';
+            let csv = 'Cliente,Modelo,IMEI,Estado MDM,Estado de Pago,Último Pago,Fecha Registro\n';
             salesData.forEach(row => {
-                csv += `"${row.Cliente}","${row.Modelo}","${row.Identificador}","${row.Tipo}","${row['Estado MDM']}","${row['Estado de Pago']}","${row['Último Pago']}","${row['Fecha Registro']}"\n`;
+                csv += `"${row.Cliente}","${row.Modelo}","${row.IMEI}","${row['Estado MDM']}","${row['Estado de Pago']}","${row['Último Pago']}","${row['Fecha Registro']}"\n`;
             });
             
             const blob = new Blob([csv], { type: 'text/csv' });
