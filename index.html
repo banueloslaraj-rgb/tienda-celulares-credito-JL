@@ -9,8 +9,9 @@
     <!-- EmailJS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
-        // Inicializar EmailJS
-        emailjs.init('WY8SuQs3NOXkc5je2');  //L6MM6O9uYt9zG8S32
+        // Inicializar EmailJS con TU Public Key
+        emailjs.init('WY8SuQs3NOXkc5je2');
+        console.log("✅ EmailJS inicializado con Public Key: WY8SuQs3NOXkc5je2");
     </script>
     
     <!-- Firebase SDK -->
@@ -912,9 +913,38 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* Botón de prueba */
+        .test-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            background: #e74c3c;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .test-button:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
+    <!-- Botón de prueba EmailJS -->
+    <button class="test-button" onclick="testEmailJSSimple()">
+        <i class="fas fa-paper-plane"></i> Probar EmailJS
+    </button>
+
     <!-- Header -->
     <header>
         <div class="container">
@@ -1434,6 +1464,52 @@
         let devices = [];
         let firebaseReady = false;
 
+        // ========== FUNCIÓN DE PRUEBA EMAILJS ==========
+        async function testEmailJSSimple() {
+            console.log("🔍 Iniciando prueba de EmailJS...");
+            
+            try {
+                alert("📤 Enviando correo de prueba a jlcelulares888@gmail.com...\nAbre la consola (F12) para ver detalles.");
+                
+                // Datos de prueba MINIMOS
+                const testParams = {
+                    to_email: "jlcelulares888@gmail.com",
+                    from_name: "Sistema de Prueba Celulares JL",
+                    sale_id: "TEST_" + Date.now(),
+                    client_name: "Cliente de Prueba",
+                    client_phone: "3111063251",
+                    client_email: "jlcelulares888@gmail.com",
+                    client_address: "Dirección de prueba",
+                    client_curp: "TESTCURP123",
+                    product_name: "iPhone 14 Pro",
+                    product_price: "$1299",
+                    initial_payment: "$300",
+                    months: "12",
+                    monthly_payment: "$95.50",
+                    total_amount: "$1146.00",
+                    timestamp: new Date().toLocaleString('es-MX'),
+                    ip_address: "127.0.0.1",
+                    documents_count: "4/4 documentos subidos"
+                };
+                
+                console.log("📤 Enviando correo con estos datos:", testParams);
+                
+                // USANDO TU SERVICE ID Y TEMPLATE ID REALES
+                const result = await emailjs.send(
+                    "service_fwhlfmm",      // Tu Service ID
+                    "template_8p54gr8",     // Template ID de "template_nuevo_credito"
+                    testParams
+                );
+                
+                console.log("✅ PRUEBA EXITOSA:", result);
+                alert("✅ Correo de prueba enviado exitosamente!\n\nRevisa:\n1. Bandeja de entrada de jlcelulares888@gmail.com\n2. Carpeta de Spam/Promociones\n3. EmailJS → Transaction History");
+                
+            } catch (error) {
+                console.error("❌ ERROR EN PRUEBA:", error);
+                alert("❌ Error en prueba:\n\n" + (error.text || error.message) + "\n\nRevisa la consola (F12) para más detalles.");
+            }
+        }
+
         // ========== FUNCIONES DE DOCUMENTOS ==========
 
         function goBackToCalculator() {
@@ -1566,76 +1642,6 @@
             } catch (error) {
                 console.error("❌ Error cargando desde Firebase:", error);
                 return [];
-            }
-        }
-
-        // ========== FUNCIONES MDM PRINCIPALES ==========
-
-        async function blockDevice(deviceId) {
-            try {
-                const device = findDeviceById(deviceId);
-                if (!device) {
-                    alert('❌ Dispositivo no encontrado');
-                    return;
-                }
-                
-                if (confirm(`¿Estás seguro de BLOQUEAR el dispositivo?\n\nCliente: ${device.clientName}\nIMEI: ${device.imei}`)) {
-                    if (device.firebaseId && firebaseReady) {
-                        const updateData = {
-                            status: 'blocked',
-                            lastUpdated: new Date().toISOString()
-                        };
-                        
-                        await firebaseModules.updateDoc(
-                            firebaseModules.doc(firestoreDB, "devices", device.firebaseId),
-                            updateData
-                        );
-                    }
-                    
-                    device.status = 'blocked';
-                    saveToLocalStorage();
-                    await loadDevicesList();
-                    updateStats();
-                    
-                    alert(`📵 DISPOSITIVO BLOQUEADO\n\nCliente: ${device.clientName}\nIMEI: ${device.imei}`);
-                }
-            } catch (error) {
-                console.error('Error bloqueando dispositivo:', error);
-                alert('❌ Error al bloquear el dispositivo');
-            }
-        }
-
-        async function unblockDevice(deviceId) {
-            try {
-                const device = findDeviceById(deviceId);
-                if (!device) {
-                    alert('❌ Dispositivo no encontrado');
-                    return;
-                }
-                
-                if (confirm(`¿Estás seguro de DESBLOQUEAR el dispositivo?\n\nIMEI: ${device.imei}`)) {
-                    if (device.firebaseId && firebaseReady) {
-                        const updateData = {
-                            status: 'active',
-                            lastUpdated: new Date().toISOString()
-                        };
-                        
-                        await firebaseModules.updateDoc(
-                            firebaseModules.doc(firestoreDB, "devices", device.firebaseId),
-                            updateData
-                        );
-                    }
-                    
-                    device.status = 'active';
-                    saveToLocalStorage();
-                    await loadDevicesList();
-                    updateStats();
-                    
-                    alert(`✅ DISPOSITIVO DESBLOQUEADO\n\nIMEI: ${device.imei}`);
-                }
-            } catch (error) {
-                console.error('Error desbloqueando dispositivo:', error);
-                alert('❌ Error al desbloquear el dispositivo');
             }
         }
 
@@ -2311,10 +2317,12 @@
             };
             
             try {
-                // Enviar correo a la empresa (usando tu Service ID)
+                console.log("📤 Enviando correo a la empresa...");
+                
+                // Enviar correo a la empresa (usando Template ID REAL)
                 await emailjs.send(
-                    "service_fwhlfmm",  // Tu Service ID de EmailJS
-                    "template_8p54gr8",  // Template ID que crearás en EmailJS
+                    "service_fwhlfmm",      // Tu Service ID
+                    "template_8p54gr8",     // Template ID de "template_nuevo_credito"
                     templateParams
                 );
                 
@@ -2332,7 +2340,7 @@
                 
                 await emailjs.send(
                     "service_fwhlfmm",
-                    "template_rt3p7vh",
+                    "template_rt3p7vh",     // Template ID de "template_confirmacion_cliente"
                     clientTemplateParams
                 );
                 
